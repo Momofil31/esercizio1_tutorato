@@ -1,3 +1,7 @@
+<?php
+  include_once 'includes/config.inc.php';
+?>
+
 <html>
 
 <head>
@@ -30,6 +34,39 @@
     Molestiae esse rerum sequi modi fugit nulla.
   </div>
   <br>
+
+  <table>
+    <tr>
+      <th>Id</th>
+      <th>Name</th>
+      <th>Category</th>
+      <th>Image Url</th>
+    </tr>
+    <?php
+      $query = "SELECT * FROM products INNER JOIN categories on product_category = category_id";
+    
+      $stmt = $pdo->prepare($query);
+      $stmt->execute();
+      $results = $stmt->fetchAll();
+      if ($results == null) {
+        ?>
+    <tr>
+      <td colspan="4" style="text-align: center">Nessun risultato</td>
+    </tr>
+    <?php
+      } else {
+        foreach ($results as $row) { ?>
+    <tr>
+      <td><?php echo $row['product_id']; ?></td>
+      <td><?php echo $row['product_name']; ?></td>
+      <td><?php echo $row['category_name']; ?></td>
+      <td><a href="<?php echo $row['product_imgurl']; ?>" target="_blank"><?php echo $row['product_imgurl']; ?></a></td>
+    </tr>
+    <?php
+        }
+      }
+     ?>
+  </table>
 </body>
 
 </html>
