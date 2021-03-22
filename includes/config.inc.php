@@ -1,4 +1,5 @@
 <?php
+require 'functions.php';
 $host = "localhost";
 $username = "root";
 $password = "root";

@@ -1,5 +1,11 @@
 <?php
   include_once 'includes/config.inc.php';
+
+  if (!func::checkLoginState($pdo)) {
+    ob_end_clean();
+    header("location:login.php");
+    exit();
+  }
 ?>
 
 <html>
