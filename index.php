@@ -23,6 +23,7 @@
 </head>
 
 <body>
+  <a href="logout.php">Logout</a>
   <h1>Esercizio 1 Tutorato</h1>
   <div class="columns-div">
     Lorem ipsum dolor sit, amet consectetur adipisicing elit. Iusto illum velit exercitationem non nobis est quia ipsa
@@ -35,6 +36,26 @@
   </div>
   <br>
 
+  <div class="search-form">
+    <form action="index.php" method="get">
+      <input type="text" name="search" placeholder="Ricercare per nome o per riferimento">
+      <select name="category" id="inputCategory">
+        <option <?php if (!isset($_POST['category'])) echo 'selected'; ?> disabled value>Selezionare una categoria
+        </option>
+        <?php 
+        $query = "SELECT DISTINCT category_name FROM categories";
+        foreach($pdo->query($query) as $row) {
+          ?>
+        <option value="<?php echo $row["category_name"] ?>"
+          <?php if (isset($_POST["category"]) && $_POST["category"] == $row["category_name"]) echo "selected" ?>>
+          <?php echo $row["category_name"] ?></option>
+        <?php
+        }
+        ?>
+      </select>
+      <button type="submit">Search</button>
+    </form>
+  </div>
   <table>
     <tr>
       <th>Id</th>
@@ -43,10 +64,14 @@
       <th>Image Url</th>
     </tr>
     <?php
-      $query = "SELECT * FROM products INNER JOIN categories on product_category = category_id";
-    
+      $query = "SELECT * FROM products INNER JOIN categories on product_category = category_id WHERE  product_name LIKE :search AND category_name LIKE :category";
+      
+      $search = !empty($_GET['search']) ? $_GET['search'] : '%';
+      $category = !empty($_GET['category']) ? $_GET['category'] : '%';
+      
+      $param = array('search' => $search, 'category' => $category);
       $stmt = $pdo->prepare($query);
-      $stmt->execute();
+      $stmt->execute($param);
       $results = $stmt->fetchAll();
       if ($results == null) {
         ?>
